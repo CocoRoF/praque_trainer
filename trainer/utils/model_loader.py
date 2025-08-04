@@ -9,7 +9,7 @@ from sentence_transformers import (
     models,
     SentenceTransformer,
 )
-from constants_loader import get_constant_list
+from trainer.utils.constants_loader import get_constant_list
 
 TEXT_EMBEDDING_TASK = get_constant_list("TEXT_EMBEDDING")
 SENTENCE_TRANSFORMER_TASK = get_constant_list("SENTENCE_TRANSFORMER")

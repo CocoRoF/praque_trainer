@@ -25,7 +25,7 @@ from trainer.arguments import (
 )
 
 from trainer.training_script.gemma3.gemma3_composer import gemma3_trainer_composer
-from constants_loader import get_constant_list
+from trainer.utils.constants_loader import get_constant_list
 
 TEXT_EMBEDDING_TASK = get_constant_list("TEXT_EMBEDDING")
 SENTENCE_TRANSFORMER_TASK = get_constant_list("SENTENCE_TRANSFORMER")

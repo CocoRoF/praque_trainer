@@ -1,4 +1,4 @@
-import constants
+import trainer.constants as constants
 
 def get_constant_list(var_name: str) -> list:
     """

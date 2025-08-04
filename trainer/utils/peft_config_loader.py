@@ -1,5 +1,5 @@
 from peft import LoraConfig, AdaLoraConfig, TaskType, IA3Config, AdaptionPromptConfig, VeraConfig, LNTuningConfig, get_peft_model, tuners
-from constants_loader import get_constant_list
+from trainer.utils.constants_loader import get_constant_list
 
 SENTENCE_TRANSFORMER_TASK = get_constant_list("SENTENCE_TRANSFORMER")
 CROSS_ENCODER_TASK = get_constant_list("CROSS_ENCODER")

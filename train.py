@@ -24,7 +24,7 @@ from trainer.utils.model_loader import huggingface_model_load
 from trainer.utils.tools import select_best_checkpoint_folder, parse_csv_string, selective_freeze, print_trainable_parameters
 from trainer.training_script.trainer_template import trainer
 from trainer.dataloader import serve_dataset
-from constants_loader import get_constant_list
+from trainer.utils.constants_loader import get_constant_list
 
 os.environ["TORCH_NCCL_HEARTBEAT_TIMEOUT_SEC"] = "3600"
 # os.environ["NCCL_DEBUG"] = "INFO"
