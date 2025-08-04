@@ -1,0 +1,21 @@
+services:
+  polar-trainer:
+    image: pytorch/pytorch:2.6.0-cuda12.4-cudnn9-devel
+    shm_size: 32g
+    deploy:
+      resources:
+        reservations:
+          devices:
+            - driver: nvidia
+              count: all
+              capabilities: [gpu]
+    environment:
+      - NVIDIA_VISIBLE_DEVICES=all
+    volumes:
+      - ./script.sh:/app/script.sh
+      - ./job_data:/app/job_data
+      - ./eval_job_data:/app/eval_job_data
+    working_dir: /app
+    command: ["bash", "script.sh"]
+    ports:
+      - "8000:8000"
