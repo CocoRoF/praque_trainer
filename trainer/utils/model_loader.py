@@ -9,12 +9,12 @@ from sentence_transformers import (
     models,
     SentenceTransformer,
 )
-from trainer.utils.env_loader import get_env_list
+from constants_loader import get_constant_list
 
-TEXT_EMBEDDING_TASK = get_env_list("TEXT_EMBEDDING")
-SENTENCE_TRANSFORMER_TASK = get_env_list("SENTENCE_TRANSFORMER")
-CROSS_ENCODER_TASK = get_env_list("CROSS_ENCODER")
-MULTIMODAL_LANGUAGE_MODEL = get_env_list("MULTIMODAL_LANGUAGE_MODEL")
+TEXT_EMBEDDING_TASK = get_constant_list("TEXT_EMBEDDING")
+SENTENCE_TRANSFORMER_TASK = get_constant_list("SENTENCE_TRANSFORMER")
+CROSS_ENCODER_TASK = get_constant_list("CROSS_ENCODER")
+MULTIMODAL_LANGUAGE_MODEL = get_constant_list("MULTIMODAL_LANGUAGE_MODEL")
 
 def huggingface_model_load(model_path, task, num_labels, st_model_arg, max_seq_length, pooling_mode, dense_feature, token=None, device=None, language_model_class=None, **args):
     if language_model_class == "gemma3":

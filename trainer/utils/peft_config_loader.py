@@ -1,10 +1,10 @@
 from peft import LoraConfig, AdaLoraConfig, TaskType, IA3Config, AdaptionPromptConfig, VeraConfig, LNTuningConfig, get_peft_model, tuners
-from trainer.utils.env_loader import get_env_list
+from constants_loader import get_constant_list
 
-SENTENCE_TRANSFORMER_TASK = get_env_list("SENTENCE_TRANSFORMER")
-CROSS_ENCODER_TASK = get_env_list("CROSS_ENCODER")
-MULTIMODAL_LANGUAGE_MODEL = get_env_list("MULTIMODAL_LANGUAGE_MODEL")
-CLASSIFICATION_TASK = get_env_list("CLASSIFICATION")
+SENTENCE_TRANSFORMER_TASK = get_constant_list("SENTENCE_TRANSFORMER")
+CROSS_ENCODER_TASK = get_constant_list("CROSS_ENCODER")
+MULTIMODAL_LANGUAGE_MODEL = get_constant_list("MULTIMODAL_LANGUAGE_MODEL")
+CLASSIFICATION_TASK = get_constant_list("CLASSIFICATION")
 
 def get_peft_config(peftconfig_args, model_train_method):
     if model_train_method == 'clm':
@@ -17,7 +17,7 @@ def get_peft_config(peftconfig_args, model_train_method):
         task_type = TaskType.CAUSAL_LM
     else:
         raise ValueError("[FATAL ERROR] Unexpected Method Selected. Please Check 'Train Method'")
-    
+
     if peftconfig_args.peft_type == "lora":
         peft_config = LoraConfig(
             r=peftconfig_args.lora_r,
@@ -28,7 +28,7 @@ def get_peft_config(peftconfig_args, model_train_method):
             bias="none",
             task_type=task_type,
         )
-        
+
     elif peftconfig_args.peft_type == "adalora":
         peft_config = AdaLoraConfig(
             init_r=peftconfig_args.adalora_init_r,
@@ -44,7 +44,7 @@ def get_peft_config(peftconfig_args, model_train_method):
             bias="none",
             task_type=task_type,
         )
-            
+
     elif peftconfig_args.peft_type == "ia3":
         peft_config = IA3Config(
             target_modules=peftconfig_args.ia3_target_modules,
@@ -58,7 +58,7 @@ def get_peft_config(peftconfig_args, model_train_method):
             adapter_len=peftconfig_args.adapter_len,
             task_type=task_type,
         )
-        
+
     elif peftconfig_args.peft_type == "vera":
         peft_config = VeraConfig(
             target_modules=peftconfig_args.vera_target_modules, task_type=task_type, init_weights=False
@@ -68,5 +68,5 @@ def get_peft_config(peftconfig_args, model_train_method):
             target_modules=peftconfig_args.ln_target_modules,
             task_type=task_type,
         )
-        
+
     return peft_config

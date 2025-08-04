@@ -25,13 +25,13 @@ from trainer.arguments import (
 )
 
 from trainer.training_script.gemma3.gemma3_composer import gemma3_trainer_composer
-from trainer.utils.env_loader import get_env_list
+from constants_loader import get_constant_list
 
-TEXT_EMBEDDING_TASK = get_env_list("TEXT_EMBEDDING")
-SENTENCE_TRANSFORMER_TASK = get_env_list("SENTENCE_TRANSFORMER")
-CROSS_ENCODER_TASK = get_env_list("CROSS_ENCODER")
-MULTIMODAL_LANGUAGE_MODEL = get_env_list("MULTIMODAL_LANGUAGE_MODEL")
-CLASSIFICATION_TASK = get_env_list("CLASSIFICATION")
+TEXT_EMBEDDING_TASK = get_constant_list("TEXT_EMBEDDING")
+SENTENCE_TRANSFORMER_TASK = get_constant_list("SENTENCE_TRANSFORMER")
+CROSS_ENCODER_TASK = get_constant_list("CROSS_ENCODER")
+MULTIMODAL_LANGUAGE_MODEL = get_constant_list("MULTIMODAL_LANGUAGE_MODEL")
+CLASSIFICATION_TASK = get_constant_list("CLASSIFICATION")
 
 load_dotenv()
 logger = logging.getLogger(__name__)

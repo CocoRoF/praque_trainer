@@ -1,16 +1,16 @@
 import json
 
-from trainer.utils.env_loader import get_env_list
+from constants_loader import get_constant_list
 
-SENTENCE_TRANSFORMER_TASK = get_env_list("SENTENCE_TRANSFORMER")
-CROSS_ENCODER_TASK = get_env_list("CROSS_ENCODER")
-MULTIMODAL_LANGUAGE_MODEL = get_env_list("MULTIMODAL_LANGUAGE_MODEL")
+SENTENCE_TRANSFORMER_TASK = get_constant_list("SENTENCE_TRANSFORMER")
+CROSS_ENCODER_TASK = get_constant_list("CROSS_ENCODER")
+MULTIMODAL_LANGUAGE_MODEL = get_constant_list("MULTIMODAL_LANGUAGE_MODEL")
 
 def get_deepspeed_config(training_args, deepspeed_args):
     if (deepspeed_args.ds_jsonpath is not None) and (len(deepspeed_args.ds_jsonpath) > 0):
         with open(deepspeed_args.ds_jsonpath, "r") as f:
             deepspeed_config = json.load(f)
-    
+
     elif deepspeed_args.ds_preset == 'zero-1':
         print("[INFO] USE DeepSpeed: Zero Optimization Stage 1")
         deepspeed_config = {
@@ -27,10 +27,10 @@ def get_deepspeed_config(training_args, deepspeed_args):
             },
             "gradient_clipping": training_args.max_grad_norm
         }
-        
+
     elif deepspeed_args.ds_preset == 'zero-2':
         print("[INFO] USE DeepSpeed: Zero Optimization Stage 2")
-        
+
         if training_args.gradient_checkpointing:
             print("[INFO] Gradient Checkpointing Enabled — Disabling Offload Options for Compatibility")
             offload_optimizer = {
@@ -73,7 +73,7 @@ def get_deepspeed_config(training_args, deepspeed_args):
             },
             "gradient_clipping": training_args.max_grad_norm
         }
-        
+
     elif deepspeed_args.ds_preset == 'zero-2-non-offload':
         print("[INFO] USE DeepSpeed: Zero Optimization Stage 2 (Non-Offload)")
         deepspeed_config = {
@@ -105,10 +105,10 @@ def get_deepspeed_config(training_args, deepspeed_args):
             },
             "gradient_clipping": training_args.max_grad_norm
         }
-        
+
     elif deepspeed_args.ds_preset == 'zero-3':
         print("[INFO] USE DeepSpeed: Zero Optimization Stage 3")
-        
+
         if training_args.gradient_checkpointing:
             print("[INFO] Gradient Checkpointing Enabled — Disabling Offload Options for Compatibility (ZeRO-3)")
             offload_optimizer = {
@@ -158,5 +158,5 @@ def get_deepspeed_config(training_args, deepspeed_args):
         print("[FATAL ERROR] Can't Find 'deepspeed_config.json' File")
         print("[FATAL ERROR] 'zero-1', 'zero-2', 'zero-3' are only available for ds_preset")
         raise RuntimeError
-    
+
     return deepspeed_config

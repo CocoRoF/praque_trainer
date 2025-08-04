@@ -24,7 +24,7 @@ from trainer.utils.model_loader import huggingface_model_load
 from trainer.utils.tools import select_best_checkpoint_folder, parse_csv_string, selective_freeze, print_trainable_parameters
 from trainer.training_script.trainer_template import trainer
 from trainer.dataloader import serve_dataset
-from trainer.utils.env_loader import get_env_list
+from constants_loader import get_constant_list
 
 os.environ["TORCH_NCCL_HEARTBEAT_TIMEOUT_SEC"] = "3600"
 # os.environ["NCCL_DEBUG"] = "INFO"
@@ -38,11 +38,11 @@ logger = logging.getLogger(__name__)
 num_gpus = torch.cuda.device_count()
 current_time = datetime.now().strftime("%Y%m%d_%H%M%S")
 
-TEXT_EMBEDDING_TASK = get_env_list("TEXT_EMBEDDING")
-SENTENCE_TRANSFORMER_TASK = get_env_list("SENTENCE_TRANSFORMER")
-CROSS_ENCODER_TASK = get_env_list("CROSS_ENCODER")
-MULTIMODAL_LANGUAGE_MODEL = get_env_list("MULTIMODAL_LANGUAGE_MODEL")
-CLASSIFICATION_TASK = get_env_list("CLASSIFICATION")
+TEXT_EMBEDDING_TASK = get_constant_list("TEXT_EMBEDDING")
+SENTENCE_TRANSFORMER_TASK = get_constant_list("SENTENCE_TRANSFORMER")
+CROSS_ENCODER_TASK = get_constant_list("CROSS_ENCODER")
+MULTIMODAL_LANGUAGE_MODEL = get_constant_list("MULTIMODAL_LANGUAGE_MODEL")
+CLASSIFICATION_TASK = get_constant_list("CLASSIFICATION")
 
 def get_task_name(task):
     if task in SENTENCE_TRANSFORMER_TASK:

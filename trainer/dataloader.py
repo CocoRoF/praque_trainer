@@ -2,7 +2,7 @@ import logging
 import datasets
 from huggingface_hub import login
 from trainer.utils.dataloader_toolkit import DataLoader, is_valid_input
-from trainer.utils.env_loader import get_env_list
+from constants_loader import get_constant_list
 
 logger = logging.getLogger(__name__)
 
