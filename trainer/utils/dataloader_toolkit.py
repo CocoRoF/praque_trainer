@@ -9,7 +9,7 @@ from huggingface_hub import create_repo, HfApi
 from trainer.utils.tools import huggingface_repo_downloader
 
 load_dotenv()
-PLATEER_HGF_TOKEN = os.getenv("PLATEER_HGF_TOKEN")
+HUGGING_FACE_HUB_TOKEN = os.getenv("HUGGING_FACE_HUB_TOKEN")
 
 import datasets
 
@@ -414,7 +414,7 @@ class DataLoader():
         """
         try:
             dataset_list = [
-                datasets.load_dataset(hgf_path, data_dir=hgf_dir, split=split, token=PLATEER_HGF_TOKEN)
+                datasets.load_dataset(hgf_path, data_dir=hgf_dir, split=split, token=HUGGING_FACE_HUB_TOKEN)
                 for hgf_dir in hgf_data_dir
             ]
             dataset = datasets.concatenate_datasets(dataset_list)
@@ -424,8 +424,8 @@ class DataLoader():
         if push_to is None:
             return dataset
         else:
-            create_repo(repo_id=push_to, token=PLATEER_HGF_TOKEN, exist_ok=True)
-            dataset.push_to_hub(push_to, config_name=config_name, data_dir=data_dir, token=PLATEER_HGF_TOKEN)
+            create_repo(repo_id=push_to, token=HUGGING_FACE_HUB_TOKEN, exist_ok=True)
+            dataset.push_to_hub(push_to, config_name=config_name, data_dir=data_dir, token=HUGGING_FACE_HUB_TOKEN)
             print(f"[INFO] Successfully Push to '{push_to}'")
 
     def hgf_ds_to_minio(
@@ -457,11 +457,11 @@ class DataLoader():
             업로드 도중 예외가 발생하면, 로컬에 생성된 임시 데이터셋 디렉토리를 삭제한 후 오류 메시지를 출력합니다.
         """
         if hgf_data_dir is None:
-            dataset = datasets.load_dataset(hgf_path, split=data_split, token=PLATEER_HGF_TOKEN)
+            dataset = datasets.load_dataset(hgf_path, split=data_split, token=HUGGING_FACE_HUB_TOKEN)
         elif isinstance(hgf_data_dir, str):
-            dataset = datasets.load_dataset(hgf_path, data_dir=hgf_data_dir, split=data_split, token=PLATEER_HGF_TOKEN)
+            dataset = datasets.load_dataset(hgf_path, data_dir=hgf_data_dir, split=data_split, token=HUGGING_FACE_HUB_TOKEN)
         elif isinstance(hgf_data_dir, list):
-            dataset_list = [datasets.load_dataset(hgf_path, data_dir=hgf_dir, split=data_split, token=PLATEER_HGF_TOKEN) for hgf_dir in hgf_data_dir]
+            dataset_list = [datasets.load_dataset(hgf_path, data_dir=hgf_dir, split=data_split, token=HUGGING_FACE_HUB_TOKEN) for hgf_dir in hgf_data_dir]
             dataset = datasets.concatenate_datasets(dataset_list)
         else:
             raise ValueError("[ERROR] Unvalid type. Should check 'hgf_path'.")

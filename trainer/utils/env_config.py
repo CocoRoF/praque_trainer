@@ -4,7 +4,6 @@ Environment configuration utilities for loading secrets from environment variabl
 import os
 from typing import Optional
 
-
 def get_mlflow_url() -> str:
     """
     Get MLflow tracking server URL from environment variable.
