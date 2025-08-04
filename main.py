@@ -1,3 +1,4 @@
+import os
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 import uvicorn
@@ -38,6 +39,5 @@ app.include_router(loader_router)
 app.include_router(eval_router)
 
 if __name__ == "__main__":
-    # Remove reload=True to prevent automatic restarts
-    uvicorn.run("main:app", host="0.0.0.0", port=8000, reload=False)
-    
+    trainer_port = os.getenv("TRAINER_PORT", 8010)
+    uvicorn.run("main:app", host="0.0.0.0", port=trainer_port, reload=False)
