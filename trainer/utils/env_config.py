@@ -5,6 +5,16 @@ import os
 from typing import Optional
 
 
+def get_mlflow_url() -> str:
+    """
+    Get MLflow tracking server URL from environment variable.
+    Falls back to default if not set.
+
+    Returns:
+        str: MLflow tracking server URL
+    """
+    return os.getenv("MLFLOW_URL", "")
+
 def get_huggingface_token() -> str:
     """
     Get HuggingFace token from environment variable.

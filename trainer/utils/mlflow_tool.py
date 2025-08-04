@@ -6,7 +6,7 @@ from mlflow.tracking import MlflowClient
 def init_mlflow(mlflow_url: str, experiment_name: str, run_name: str, mlflow_force_run:bool = False, rank: int = 0):
     """
     MLflow URI 설정, 실험 복구 또는 생성, run 시작까지 모두 수행합니다.
-    
+
     Args:
         mlflow_url (str): MLflow Tracking URL
         experiment_name (str): 실험 이름 (model_name 등)
@@ -80,11 +80,10 @@ def get_mlflow_info(mlflow_url:str = "https://polar-mlflow-git.x2bee.com/", expe
     else:
         run_id = runs.iloc[0]["run_id"]
         print("Run ID:", run_id)
-        
+
     return experiment.experiment_id, run_id
 
 if __name__ == "__main__":
     a, b = get_mlflow_info(mlflow_url="https://polar-mlflow-git.x2bee.com/", experiment_name="KoModernBERT-large-mlm-v20", run_id="KoModernBERT-large-mlm-v20_20250325_000756")
-    
+
     print(a, b)
-    

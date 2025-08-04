@@ -11,7 +11,7 @@ from datetime import datetime
 import glob
 from pathlib import Path
 from trainer.utils.mlflow_tool import get_mlflow_info
-from trainer.utils.env_config import get_huggingface_token, get_huggingface_user_id, get_minio_config
+from trainer.utils.env_config import get_huggingface_token, get_huggingface_user_id, get_minio_config, get_mlflow_url
 
 # from zoneinfo import ZoneInfo
 
@@ -46,7 +46,7 @@ class TrainingParams(BaseModel):
     dataset_load_method: str = Field("huggingface", description="Where to load the dataset from")
     hugging_face_user_id: str = Field(default_factory=get_huggingface_user_id, description="HuggingFace ID")
     hugging_face_token: str = Field(default_factory=get_huggingface_token, description="HuggingFace Token")
-    mlflow_url: str = Field("https://polar-mlflow-git.x2bee.com/", description="MLFlow URL")
+    mlflow_url: str = Field(default_factory=get_mlflow_url, description="MLFlow URL")
     mlflow_run_id: str = Field("test", description="MLFlow Run ID")
     minio_url: str = Field(default_factory=lambda: get_minio_config()["url"], description="MinIO URL")
     minio_access_key: str = Field(default_factory=lambda: get_minio_config()["access_key"], description="MinIO Access Key")
