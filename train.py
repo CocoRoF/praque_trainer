@@ -21,6 +21,7 @@ from trainer.arguments import BaseArguments, ModelArguments, DataArguments, Addi
 from trainer.utils.dataloader_toolkit import DataLoader
 from trainer.utils.deepspeed_config_loader import get_deepspeed_config
 from trainer.utils.model_loader import huggingface_model_load
+from trainer.utils.tokenizer_loader import huggingface_tokenizer_load
 from trainer.utils.tools import select_best_checkpoint_folder, parse_csv_string, selective_freeze, print_trainable_parameters
 from trainer.training_script.trainer_template import trainer
 from trainer.dataloader import serve_dataset
@@ -279,22 +280,14 @@ def main():
         st_model_arg = {}
 
     try:
-        if model_args.language_model_class == 'gemma3':
-            if (model_args.tokenizer_name is not None) and (len(model_args.tokenizer_name) > 0):
-                try:
-                    tokenizer = AutoProcessor.from_pretrained(model_args.tokenizer_name, use_fast=True)
-                except:
-                    tokenizer = AutoProcessor.from_pretrained(model_args.model_name_or_path, use_fast=True)
-            else:
-                tokenizer = AutoProcessor.from_pretrained(model_args.model_name_or_path, subfolder=model_args.model_subfolder, use_fast=True)
-        else:
-            if (model_args.tokenizer_name is not None) and (len(model_args.tokenizer_name) > 0):
-                try:
-                    tokenizer = AutoTokenizer.from_pretrained(model_args.tokenizer_name, use_fast=True)
-                except:
-                    tokenizer = AutoTokenizer.from_pretrained(model_args.model_name_or_path, use_fast=True)
-            else:
-                tokenizer = AutoTokenizer.from_pretrained(model_args.model_name_or_path, subfolder=model_args.model_subfolder, use_fast=True)
+        tokenizer = huggingface_tokenizer_load(
+            model_path=model_args.model_name_or_path,
+            tokenizer_name=model_args.tokenizer_name,
+            max_seq_length=data_args.tokenizer_max_len,
+            model_subfolder=model_args.model_subfolder,
+            language_model_class=model_args.language_model_class,
+        )
+        logger.info("[INFO] Tokenizer loaded successfully.")
 
     except Exception as e:
         logger.error("[FATAL ERROR] Fail to pull tokenizer: %s", e)
