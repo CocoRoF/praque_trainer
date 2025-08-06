@@ -25,6 +25,7 @@ from trainer.arguments import (
 )
 
 from trainer.training_script.gemma3.gemma3_composer import gemma3_trainer_composer
+from trainer.training_script.qwen3.qwen3_composer import qwen3_trainer_composer
 from trainer.utils.constants_loader import get_constant_list
 
 TEXT_EMBEDDING_TASK = get_constant_list("TEXT_EMBEDDING")
@@ -87,7 +88,7 @@ def trainer(
             st_args, deepspeed_args, peftconfig_args, training_args
         )
     if model_args.language_model_class == "qwen3":
-        trainer_instance = gemma3_trainer_composer(
+        trainer_instance = qwen3_trainer_composer(
             model, reference_model, tokenizer, train_dataset, eval_dataset,
             base_args, model_args, data_args, add_trainer_args,
             st_args, deepspeed_args, peftconfig_args, training_args
