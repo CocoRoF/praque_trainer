@@ -340,7 +340,6 @@ def main():
     reference_model = None
 
     if (data_args.test_data is None or len(data_args.test_data) < 1) and (data_args.train_test_split_ratio is None or data_args.train_test_split_ratio <= 0):
-        training_args.do_eval = False
         training_args.eval_strategy = "no"
         training_args.eval_steps = None
 
