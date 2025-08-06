@@ -13,9 +13,10 @@ services:
               capabilities: [gpu]
     environment:
       - NVIDIA_VISIBLE_DEVICES=all
+      - TRAINER_PORT=8010
     volumes:
       - ./trainer_entrypoint.sh:/app/entrypoint.sh
     ports:
-      - ${TRAINER_PORT}:${TRAINER_PORT}
+      - 8010:8010
     working_dir: /app
     command: [ "bash", "/app/entrypoint.sh" ]
