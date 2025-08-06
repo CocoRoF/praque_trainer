@@ -23,6 +23,12 @@ def huggingface_model_load(model_path, task, num_labels, st_model_arg, max_seq_l
         )
         print("[INFO] Gemma3 Model Selected. Using 'AutoModelForImageTextToText'.")
 
+    elif language_model_class == "qwen3":
+        model = AutoModelForCausalLM.from_pretrained(
+            model_path, num_labels=num_labels, token=token, **args
+        )
+        print("[INFO] Qwen3 Model Selected. Using 'AutoModelForCausalLM'.")
+
     else:
         print(f"[FATAL ERROR!] `{task}` is not Valid!")
         print(f"SENTENCE_TRANSFORMER =", SENTENCE_TRANSFORMER_TASK)
