@@ -372,7 +372,7 @@ def run_training_thread(params: Dict[str, Any], job_id: str):
             command += [f"--nproc_per_node={params.get('number_gpu', 1)}"]
 
         command += [
-            "/app/polar-trainer/train.py",
+            "/app/trainer/train.py",
             f"--hugging_face_user_id={params.get('hugging_face_user_id', get_huggingface_user_id())}",
             f"--hugging_face_token={params.get('hugging_face_token', get_huggingface_token())}",
             f"--mlflow_url={params.get('mlflow_url', 'https://polar-mlflow-git.x2bee.com/')}",
@@ -678,13 +678,8 @@ async def start_training(params: TrainingParams, background_tasks: BackgroundTas
     """
     새 훈련 작업을 시작합니다.
     """
-    current_time = datetime.now().strftime("%Y%m%d_%H%M%S")
-    job_id = f"job_{current_time}"
-
-    # Pydantic 모델을 딕셔너리로 변환
     params_dict = params.model_dump()
-    params_dict["mlflow_run_id"] = job_id
-    # 백그라운드에서 훈련 시작
+    job_id = params_dict['mlflow_run_id']
     background_tasks.add_task(run_training, params_dict, job_id)
 
     return {
@@ -696,12 +691,13 @@ async def start_training(params: TrainingParams, background_tasks: BackgroundTas
 @router.post("/mlflow", response_model=Dict[str, Any])
 async def get_mlflow(params: MLFlowParams):
     try:
-        experiment_id, run_id = get_mlflow_info(params.mlflow_url, params.mlflow_exp_id, params.mlflow_run_id)
+        experiment_id, run_id, status = get_mlflow_info(params.mlflow_url, params.mlflow_exp_id, params.mlflow_run_id)
 
         return {
             "status": "success",
             "experiment_id": experiment_id,
             "run_id": run_id,
+            "status": status,
         }
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
