@@ -56,7 +56,7 @@ def trainer_instance(
     """
 
     data_collator = DataCollatorForLanguageModeling(
-        tokenizer=tokenizer.tokenizer,
+        tokenizer=tokenizer,
         mlm=False,
     )
 
