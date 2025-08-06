@@ -46,10 +46,10 @@ def serve_dataset(
     test_data_dir,
     test_data_split,
     train_test_split_ratio,
-    dataset_main_colunm=None,
-    dataset_sub_colunm=None,
-    dataset_minor_colunm=None,
-    dataset_last_colunm=None,
+    dataset_main_column=None,
+    dataset_sub_column=None,
+    dataset_minor_column=None,
+    dataset_last_column=None,
     data_filtering=True,
     data_args=None
 ):
@@ -108,7 +108,7 @@ def serve_dataset(
             test_dataset = test_dataset.filter(is_valid_example)
 
     # Column selection
-    col_names = list(filter(None, [dataset_main_colunm, dataset_sub_colunm, dataset_minor_colunm, dataset_last_colunm]))
+    col_names = list(filter(None, [dataset_main_column, dataset_sub_column, dataset_minor_column, dataset_last_column]))
     logger.info(f"[INFO][DATASET] Input Columns = {col_names}")
 
     train_dataset = select_columns_if_specified(train_dataset, col_names)

@@ -71,6 +71,13 @@ def main():
 
     HUGGING_FACE_USER_ID = data_args.hugging_face_user_id
     HUGGING_FACE_TOKEN = data_args.hugging_face_token
+    if data_args.hugging_face_token is None or len(data_args.hugging_face_token) < 1:
+        HUGGING_FACE_TOKEN = os.getenv("HUGGING_FACE_HUB_TOKEN", "")
+    if data_args.hugging_face_user_id is None or len(data_args.hugging_face_user_id) < 1:
+        HUGGING_FACE_USER_ID = os.getenv("HUGGING_FACE_USER_ID", "")
+    if data_args.hugging_face_token is None or len(data_args.hugging_face_token) < 1:
+        logger.warning("[WARNING] Unset Hugging Face Token. Using default token.")
+
     MLFLOW_URL = data_args.mlflow_url
 
     if deepspeed_args.use_deepspeed:
@@ -341,10 +348,10 @@ def main():
             test_data_dir=data_args.test_data_dir,
             test_data_split=data_args.test_data_split,
             train_test_split_ratio=data_args.train_test_split_ratio,
-            dataset_main_colunm=data_args.dataset_main_colunm,
-            dataset_sub_colunm=data_args.dataset_sub_colunm,
-            dataset_minor_colunm=data_args.dataset_minor_colunm,
-            dataset_last_colunm=data_args.dataset_last_colunm,
+            dataset_main_column=data_args.dataset_main_column,
+            dataset_sub_column=data_args.dataset_sub_column,
+            dataset_minor_column=data_args.dataset_minor_column,
+            dataset_last_column=data_args.dataset_last_column,
             data_filtering=data_args.data_filtering,
             data_args=data_args
         )
