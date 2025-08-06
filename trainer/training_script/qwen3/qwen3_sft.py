@@ -98,6 +98,7 @@ def trainer_instance(
 
     training_args = set_additional_parms(training_args, base_args, data_args, peftconfig_args, add_trainer_args)
     training_args.ddp_find_unused_parameters = True
+    training_args.max_length = data_args.tokenizer_max_len
     optimizer_cls_and_kwargs = (
         get_optimizer_cls_and_kwargs(model, base_args, training_args)
         if base_args.use_stableadamw else None
