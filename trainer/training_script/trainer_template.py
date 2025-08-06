@@ -86,6 +86,12 @@ def trainer(
             base_args, model_args, data_args, add_trainer_args,
             st_args, deepspeed_args, peftconfig_args, training_args
         )
+    if model_args.language_model_class == "qwen3":
+        trainer_instance = gemma3_trainer_composer(
+            model, reference_model, tokenizer, train_dataset, eval_dataset,
+            base_args, model_args, data_args, add_trainer_args,
+            st_args, deepspeed_args, peftconfig_args, training_args
+        )
     else:
         raise ValueError(f"Unsupported language model class: {model_args.language_model_class}")
 
