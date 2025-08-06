@@ -39,5 +39,5 @@ app.include_router(loader_router)
 app.include_router(eval_router)
 
 if __name__ == "__main__":
-    trainer_port = os.getenv("TRAINER_PORT", 8010)
+    trainer_port = int(os.getenv("TRAINER_PORT", 8010))
     uvicorn.run("main:app", host="0.0.0.0", port=trainer_port, reload=False)

@@ -30,6 +30,8 @@ router = APIRouter(
 
 # 기본 설정 모델
 class LoaderConfig(BaseModel):
+    model_config = {"protected_namespaces": ()}
+
     hugging_face_user_id: str = Field(default_factory=get_huggingface_user_id, description="HuggingFace ID")
     hugging_face_token: str = Field(default_factory=get_huggingface_token, description="HuggingFace Token")
     minio_url: str = Field(default_factory=lambda: get_minio_config()["url"], description="MinIO URL")
