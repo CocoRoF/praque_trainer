@@ -17,11 +17,18 @@ CROSS_ENCODER_TASK = get_constant_list("CROSS_ENCODER")
 MULTIMODAL_LANGUAGE_MODEL = get_constant_list("MULTIMODAL_LANGUAGE_MODEL")
 
 def huggingface_model_load(model_path, task, num_labels, st_model_arg, max_seq_length, pooling_mode, dense_feature, token=None, device=None, language_model_class=None, **args):
+    print("[INFO] Model Load Started...")
     if language_model_class == "gemma3":
         model = AutoModelForImageTextToText.from_pretrained(
             model_path, num_labels=num_labels, token=token, **args
         )
         print("[INFO] Gemma3 Model Selected. Using 'AutoModelForImageTextToText'.")
+
+    elif language_model_class == "qwen3":
+        model = AutoModelForCausalLM.from_pretrained(
+            model_path, num_labels=num_labels, token=token, **args
+        )
+        print("[INFO] Qwen3 Model Selected. Using 'AutoModelForCausalLM'.")
 
     else:
         print(f"[FATAL ERROR!] `{task}` is not Valid!")

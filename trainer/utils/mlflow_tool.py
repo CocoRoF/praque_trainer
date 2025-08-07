@@ -76,14 +76,18 @@ def get_mlflow_info(mlflow_url:str = "https://polar-mlflow-git.x2bee.com/", expe
     )
 
     if runs.empty:
+        run_id = "unknown"
+        run_status = "unknown"
         print("Run not found.")
     else:
         run_id = runs.iloc[0]["run_id"]
+        run_status = runs.iloc[0]["status"]
         print("Run ID:", run_id)
+        print("Run Status:", run_status)
 
-    return experiment.experiment_id, run_id
+    return experiment.experiment_id, run_id, run_status
 
 if __name__ == "__main__":
-    a, b = get_mlflow_info(mlflow_url="https://polar-mlflow-git.x2bee.com/", experiment_name="KoModernBERT-large-mlm-v20", run_id="KoModernBERT-large-mlm-v20_20250325_000756")
+    a, b, c = get_mlflow_info(mlflow_url="https://polar-mlflow-git.x2bee.com/", experiment_name="POLAR-Q3-1.7b-ecs-v1", run_id="puzzled-crow-960")
 
-    print(a, b)
+    print(a, b, c)

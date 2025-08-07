@@ -21,6 +21,7 @@ from trainer.arguments import BaseArguments, ModelArguments, DataArguments, Addi
 from trainer.utils.dataloader_toolkit import DataLoader
 from trainer.utils.deepspeed_config_loader import get_deepspeed_config
 from trainer.utils.model_loader import huggingface_model_load
+from trainer.utils.tokenizer_loader import huggingface_tokenizer_load
 from trainer.utils.tools import select_best_checkpoint_folder, parse_csv_string, selective_freeze, print_trainable_parameters
 from trainer.training_script.trainer_template import trainer
 from trainer.dataloader import serve_dataset
@@ -70,6 +71,13 @@ def main():
 
     HUGGING_FACE_USER_ID = data_args.hugging_face_user_id
     HUGGING_FACE_TOKEN = data_args.hugging_face_token
+    if data_args.hugging_face_token is None or len(data_args.hugging_face_token) < 1:
+        HUGGING_FACE_TOKEN = os.getenv("HUGGING_FACE_HUB_TOKEN", "")
+    if data_args.hugging_face_user_id is None or len(data_args.hugging_face_user_id) < 1:
+        HUGGING_FACE_USER_ID = os.getenv("HUGGING_FACE_USER_ID", "")
+    if data_args.hugging_face_token is None or len(data_args.hugging_face_token) < 1:
+        logger.warning("[WARNING] Unset Hugging Face Token. Using default token.")
+
     MLFLOW_URL = data_args.mlflow_url
 
     if deepspeed_args.use_deepspeed:
@@ -279,22 +287,14 @@ def main():
         st_model_arg = {}
 
     try:
-        if model_args.language_model_class == 'gemma3':
-            if (model_args.tokenizer_name is not None) and (len(model_args.tokenizer_name) > 0):
-                try:
-                    tokenizer = AutoProcessor.from_pretrained(model_args.tokenizer_name, use_fast=True)
-                except:
-                    tokenizer = AutoProcessor.from_pretrained(model_args.model_name_or_path, use_fast=True)
-            else:
-                tokenizer = AutoProcessor.from_pretrained(model_args.model_name_or_path, subfolder=model_args.model_subfolder, use_fast=True)
-        else:
-            if (model_args.tokenizer_name is not None) and (len(model_args.tokenizer_name) > 0):
-                try:
-                    tokenizer = AutoTokenizer.from_pretrained(model_args.tokenizer_name, use_fast=True)
-                except:
-                    tokenizer = AutoTokenizer.from_pretrained(model_args.model_name_or_path, use_fast=True)
-            else:
-                tokenizer = AutoTokenizer.from_pretrained(model_args.model_name_or_path, subfolder=model_args.model_subfolder, use_fast=True)
+        tokenizer = huggingface_tokenizer_load(
+            model_path=model_args.model_name_or_path,
+            tokenizer_name=model_args.tokenizer_name,
+            max_seq_length=data_args.tokenizer_max_len,
+            model_subfolder=model_args.model_subfolder,
+            language_model_class=model_args.language_model_class,
+        )
+        logger.info("[INFO] Tokenizer loaded successfully.")
 
     except Exception as e:
         logger.error("[FATAL ERROR] Fail to pull tokenizer: %s", e)
@@ -339,6 +339,10 @@ def main():
 
     reference_model = None
 
+    if (data_args.test_data is None or len(data_args.test_data) < 1) and (data_args.train_test_split_ratio is None or data_args.train_test_split_ratio <= 0):
+        training_args.eval_strategy = "no"
+        training_args.eval_steps = None
+
     try:
         train_dataset, test_dataset = serve_dataset(
             train_data=data_args.train_data,
@@ -348,10 +352,10 @@ def main():
             test_data_dir=data_args.test_data_dir,
             test_data_split=data_args.test_data_split,
             train_test_split_ratio=data_args.train_test_split_ratio,
-            dataset_main_colunm=data_args.dataset_main_colunm,
-            dataset_sub_colunm=data_args.dataset_sub_colunm,
-            dataset_minor_colunm=data_args.dataset_minor_colunm,
-            dataset_last_colunm=data_args.dataset_last_colunm,
+            dataset_main_column=data_args.dataset_main_column,
+            dataset_sub_column=data_args.dataset_sub_column,
+            dataset_minor_column=data_args.dataset_minor_column,
+            dataset_last_column=data_args.dataset_last_column,
             data_filtering=data_args.data_filtering,
             data_args=data_args
         )

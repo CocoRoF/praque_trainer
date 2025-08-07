@@ -26,18 +26,22 @@ os.makedirs(JOB_DATA_DIR, exist_ok=True)
 
 # 라우터 생성
 router = APIRouter(
-    prefix="/train",
+    prefix="/api/train",
     tags=["training"],
     responses={404: {"description": "Not found"}},
 )
 
 class MLFlowParams(BaseModel):
+    model_config = {"protected_namespaces": ()}
+
     mlflow_url: str = Field("https://polar-mlflow-git.x2bee.com/", description="MLFlow URL")
     mlflow_exp_id: str = Field("test", description="MLFlow Experiment ID")
     mlflow_run_id: str = Field("test", description="MLFlow Run ID")
 
 # 훈련 파라미터 모델 정의
 class TrainingParams(BaseModel):
+    model_config = {"protected_namespaces": ()}
+
     # Common settings
     number_gpu: int = Field(1, description="Number of GPUs to use")
     project_name: str = Field("test-project", description="Name of the current project")
@@ -326,8 +330,8 @@ def run_training_thread(params: Dict[str, Any], job_id: str):
             "dataset_info": {
                 "train_data": params.get("train_data", ""),
                 "test_data": params.get("test_data", ""),
-                "main_column": params.get("dataset_main_colunm", "goods_nm"),
-                "sub_column": params.get("dataset_sub_colunm", "label"),
+                "main_column": params.get("dataset_main_column", "goods_nm"),
+                "sub_column": params.get("dataset_sub_column", "label"),
             },
             "training_config": {
                 "project_name": params.get("project_name", "test-project"),
@@ -368,7 +372,7 @@ def run_training_thread(params: Dict[str, Any], job_id: str):
             command += [f"--nproc_per_node={params.get('number_gpu', 1)}"]
 
         command += [
-            "/app/polar-trainer/train.py",
+            "/app/trainer/train.py",
             f"--hugging_face_user_id={params.get('hugging_face_user_id', get_huggingface_user_id())}",
             f"--hugging_face_token={params.get('hugging_face_token', get_huggingface_token())}",
             f"--mlflow_url={params.get('mlflow_url', 'https://polar-mlflow-git.x2bee.com/')}",
@@ -669,18 +673,13 @@ def run_training(params: Dict[str, Any], job_id: str):
     thread.start()
     logger.info(f"Started training thread for job {job_id}")
 
-@router.post("", response_model=TrainingResponse)
+@router.post("/start", response_model=TrainingResponse)
 async def start_training(params: TrainingParams, background_tasks: BackgroundTasks):
     """
     새 훈련 작업을 시작합니다.
     """
-    current_time = datetime.now().strftime("%Y%m%d_%H%M%S")
-    job_id = f"job_{current_time}"
-
-    # Pydantic 모델을 딕셔너리로 변환
     params_dict = params.model_dump()
-    params_dict["mlflow_run_id"] = job_id
-    # 백그라운드에서 훈련 시작
+    job_id = params_dict['mlflow_run_id']
     background_tasks.add_task(run_training, params_dict, job_id)
 
     return {
@@ -692,17 +691,18 @@ async def start_training(params: TrainingParams, background_tasks: BackgroundTas
 @router.post("/mlflow", response_model=Dict[str, Any])
 async def get_mlflow(params: MLFlowParams):
     try:
-        experiment_id, run_id = get_mlflow_info(params.mlflow_url, params.mlflow_exp_id, params.mlflow_run_id)
+        experiment_id, run_id, status = get_mlflow_info(params.mlflow_url, params.mlflow_exp_id, params.mlflow_run_id)
 
         return {
             "status": "success",
             "experiment_id": experiment_id,
             "run_id": run_id,
+            "status": status,
         }
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
 
-@router.get("/{job_id}", response_model=Dict[str, Any])
+@router.get("/status/{job_id}", response_model=Dict[str, Any])
 async def get_job_status(job_id: str):
     """
     특정 훈련 작업의 상태를 조회합니다.
@@ -768,7 +768,7 @@ async def get_job_status(job_id: str):
         logger.error(f"Error getting job status for {job_id}: {str(e)}")
         raise HTTPException(status_code=500, detail=f"Error getting job status: {str(e)}")
 
-@router.get("", response_model=Dict[str, Dict[str, Any]])
+@router.get("/jobs", response_model=Dict[str, Dict[str, Any]])
 async def get_all_jobs():
     """
     모든 훈련 작업의 상태를 조회합니다.
@@ -790,7 +790,7 @@ async def get_all_jobs():
         logger.error(f"Error getting all jobs: {str(e)}")
         raise HTTPException(status_code=500, detail=f"Error getting all jobs: {str(e)}")
 
-@router.delete("/{job_id}", response_model=Dict[str, Any])
+@router.delete("/stop/{job_id}", response_model=Dict[str, Any])
 async def cancel_job(job_id: str):
     """
     실행 중인 훈련 작업을 취소합니다.

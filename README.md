@@ -135,3 +135,54 @@ train_data = "CocoRoF/e-commerce_polar_dataset"
 
 ---
 
+## 🔄 Hugging Face Repository Pull & Push
+
+이 프로젝트에는 Hugging Face Hub에서 모델이나 데이터셋을 다운로드하여 다른 repository로 복사하는 기능이 포함되어 있습니다.
+
+### 기본 사용법
+
+```python
+from hugging_face_pull_and_push import pull_and_push_repo
+
+# 모델 복사
+url = pull_and_push_repo(
+    source_repo_id="microsoft/DialoGPT-medium",    # 소스 모델
+    target_repo_id="your-username/my-dialogpt",    # 대상 repository
+    token="hf_your_token_here",                    # Hugging Face 토큰
+    private=True,                                  # private repo로 생성
+    commit_message="Mirror DialoGPT model"
+)
+
+# 데이터셋 복사
+url = pull_and_push_repo(
+    source_repo_id="squad",
+    target_repo_id="your-username/my-squad",
+    source_repo_type="dataset",
+    target_repo_type="dataset",
+    token="hf_your_token_here"
+)
+```
+
+### 커맨드라인 사용법
+
+```bash
+python hugging_face_pull_and_push.py \
+    --source microsoft/DialoGPT-medium \
+    --target your-username/my-model \
+    --token hf_your_token_here \
+    --private \
+    --message "Mirror model"
+```
+
+### 주요 기능
+
+- **전체 Repository 복사**: 모든 파일(모델 가중치, 설정 파일, 토크나이저 등)을 완전히 복사
+- **타입별 지원**: 모델, 데이터셋, Space 모두 지원
+- **선택적 파일 무시**: 특정 패턴의 파일들을 제외하고 복사 가능
+- **프라이빗 Repository**: 대상을 private repository로 설정 가능
+- **커스텀 커밋 메시지**: 의미있는 커밋 메시지 추가
+- **안전한 임시 파일 관리**: 다운로드된 파일들의 자동 정리
+
+자세한 사용 예시는 `example_usage.py` 파일을 참고하세요.
+
+---

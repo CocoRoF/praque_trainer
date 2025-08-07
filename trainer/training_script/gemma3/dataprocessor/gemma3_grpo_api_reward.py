@@ -26,9 +26,9 @@ def processor(
     train_columns = train_dataset.column_names if train_dataset is not None else []
     test_columns = test_dataset.column_names if test_dataset is not None else []
 
-    # If 'prompt' column doesn't exist and dataset_main_colunm is specified
-    if 'prompt' not in train_columns and hasattr(data_args, 'dataset_main_colunm'):
-        main_column = data_args.dataset_main_colunm
+    # If 'prompt' column doesn't exist and dataset_main_column is specified
+    if 'prompt' not in train_columns and hasattr(data_args, 'dataset_main_column'):
+        main_column = data_args.dataset_main_column
 
         # Rename main column to 'prompt' in training dataset
         if train_dataset is not None and main_column in train_columns:
@@ -40,9 +40,9 @@ def processor(
             test_dataset = test_dataset.rename_column(main_column, 'prompt')
             test_columns = test_dataset.column_names  # Update column list
 
-    # Check if 'ground_truth' column exists, if not rename dataset_sub_colunm to 'ground_truth'
-    if hasattr(data_args, 'dataset_sub_colunm') and data_args.dataset_sub_colunm:
-        sub_column = data_args.dataset_sub_colunm
+    # Check if 'ground_truth' column exists, if not rename dataset_sub_column to 'ground_truth'
+    if hasattr(data_args, 'dataset_sub_column') and data_args.dataset_sub_column:
+        sub_column = data_args.dataset_sub_column
 
         # Handle training dataset
         if train_dataset is not None:
